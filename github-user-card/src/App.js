@@ -2,12 +2,13 @@ import React from 'react';
 import axios from 'axios';
 import SearchForm from './components/SearchComponent/SearchForm';
 import UserCard from './components/UserComponent/UserCard';
+import Followers from './components/FollowersComponent/Followers';
 
 
 const options = {
-  // headers: { 
-  //   Authorization: 'Bearer fb861e05630f22b50534894aba095bae5a1405be' 
-  // }
+  headers: { 
+    Authorization: 'Bearer a83f573ff02e8cabb2ec880d2477b42e46d96fb2' 
+  }
 };
 
 
@@ -16,9 +17,9 @@ class App extends React.Component {
   state = {
     user: '',
     userData: {},
-    searchTerm: '',
     followers: [],
     followersData: {},
+    searchTerm: '',
     dataGotten: false
   }
 
@@ -34,7 +35,6 @@ class App extends React.Component {
             const { avatar_url, name, location, followers, following, bio } = userPromiseRes.data;
             this.setState({ 
               user: '',
-              dataGotten: true,
               userData: {
                 avatar_url: avatar_url,
                 name: name,
@@ -43,14 +43,16 @@ class App extends React.Component {
                 following: following,
                 bio: bio
               },
+              followers: [],
               followersData: followersPromiseRes.data,
-              followers: []
+              dataGotten: true
             }, () => {
               this.state.followersData.forEach(person => {
                 axios.get(person.url, options)
                   .then(response => {
                     this.setState({
                       followers: [...this.state.followers, {
+                        id: response.data.id,
                         avatar_url: response.data.avatar_url,
                         name: response.data.name,
                         location: response.data.location,
@@ -103,6 +105,10 @@ class App extends React.Component {
             following={this.state.userData.following}
             bio={this.state.userData.bio}
           /> 
+        }
+        
+        {
+          this.state.dataGotten && <Followers followers={this.state.followers} /> 
         }
       </main>
     )

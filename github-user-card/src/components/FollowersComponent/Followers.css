@@ -1,0 +1,44 @@
+.followers-wrapper {
+    margin-top: 5rem;
+}
+
+.followers-wrapper .title {
+    color: #fff;
+    font-size: 1.7rem;
+}
+
+.followers-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+
+.follower-item {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 1px 6px -2px #000;
+    background-color: #FFF;
+    padding: 1rem 1.5rem;
+    width: calc(50% - 15px);
+    margin: 2rem 0;
+}
+
+@media (max-width: 500px) {
+    .follower-item {
+        width: 100%;
+    }
+}
+
+.follower-item img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, .9);
+    margin-right: 2rem;
+}
+
+.follower-item .name {
+    font-size: 1.5rem;
+}

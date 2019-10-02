@@ -19,9 +19,9 @@ const UserCard = props => {
             <div className="card-info">
                 <h3 className="name">{name || `Waiting...`}</h3>
                 <p>
-                    <span>{location || `Waiting...`}</span> | 
-                    <span>Followers: {followers || `Waiting...`}</span> | 
-                    <span>Following: {following || `Waiting...`}</span>
+                    <span>Location: {location || `Everywhere and Nowhere`}</span> | 
+                    <span>Followers: {followers || `No followers. Follow me?`}</span> | 
+                    <span>Following: {following || `Too grumpy, not following anyone`}</span>
                 </p>
                 <p>Bio: {bio || `No bio, I'm a bit boring!`} </p>
             </div>
