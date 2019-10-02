@@ -5,13 +5,6 @@ import UserCard from './components/UserComponent/UserCard';
 import Followers from './components/FollowersComponent/Followers';
 
 
-const options = {
-  headers: { 
-    Authorization: 'Bearer a83f573ff02e8cabb2ec880d2477b42e46d96fb2' 
-  }
-};
-
-
 class App extends React.Component {
 
   state = {
@@ -26,8 +19,8 @@ class App extends React.Component {
   componentDidUpdate(prevState) {
     if (this.state.user !== '') {
       if (this.state.user !== prevState.user) {
-        const userPromise = axios.get(`https://api.github.com/users/${this.state.user}`, options);
-        const followersPromise = axios.get(`https://api.github.com/users/${this.state.user}/followers`, options);
+        const userPromise = axios.get(`https://api.github.com/users/${this.state.user}`);
+        const followersPromise = axios.get(`https://api.github.com/users/${this.state.user}/followers`);
 
         Promise.all([userPromise, followersPromise]) 
           .then(([userPromiseRes, followersPromiseRes]) => {
@@ -48,7 +41,7 @@ class App extends React.Component {
               dataGotten: true
             }, () => {
               this.state.followersData.forEach(person => {
-                axios.get(person.url, options)
+                axios.get(person.url)
                   .then(response => {
                     this.setState({
                       followers: [...this.state.followers, {
