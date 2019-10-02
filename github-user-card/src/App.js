@@ -1,26 +1,112 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import SearchForm from './components/SearchComponent/SearchForm';
+import UserCard from './components/UserComponent/UserCard';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const options = {
+  headers: { 
+    Authorization: 'Bearer e09c5d8332d2a2920b5f752ad754c25f367815e5' 
+  }
+};
+
+
+class App extends React.Component {
+
+  state = {
+    user: '',
+    userData: {},
+    searchTerm: '',
+    followers: [],
+    followersData: {},
+    dataGotten: false
+  }
+
+  componentDidUpdate(prevState) {
+    if (this.state.user !== '') {
+      if (this.state.user !== prevState.user) {
+        const userPromise = axios.get(`https://api.github.com/users/${this.state.user}`, options);
+        const followersPromise = axios.get(`https://api.github.com/users/${this.state.user}/followers`, options);
+
+        Promise.all([userPromise, followersPromise]) 
+          .then(([userPromiseRes, followersPromiseRes]) => {
+
+            const { avatar_url, name, location, followers, following, bio } = userPromiseRes.data;
+            this.setState({ 
+              user: '',
+              dataGotten: true,
+              userData: {
+                avatar_url: avatar_url,
+                name: name,
+                location: location,
+                followers: followers,
+                following: following,
+                bio: bio
+              },
+              followersData: followersPromiseRes.data,
+              followers: []
+            }, () => {
+              this.state.followersData.forEach(person => {
+                axios.get(person.url, options)
+                  .then(response => {
+                    this.setState({
+                      followers: [...this.state.followers, {
+                        avatar_url: response.data.avatar_url,
+                        name: response.data.name,
+                        location: response.data.location,
+                        followers: response.data.followers,
+                        following: response.data.following,
+                        bio: response.data.bio
+                      }]
+                    }, () => {
+                      console.log(this.state.followers);
+                    })
+                  })
+              })
+            })
+          })
+      }
+    }
+  }
+
+  handleSearchInputChange = (e) => {
+    this.setState({
+      user: '',
+      dataGotten: false,
+      searchTerm: e.target.value
+    })
+  }
+
+  handleSearchFormSubmit = (e) => {
+    e.preventDefault();
+    
+    this.setState( prevState => ({ 
+      user: prevState.searchTerm 
+    }))
+  }
+
+  render() {
+    return (
+      <main className="app-wrapper">
+        <SearchForm 
+          searchTerm={this.state.searchTerm} 
+          handleSearchInputChange={this.handleSearchInputChange}
+          handleSearchFormSubmit={this.handleSearchFormSubmit}
+        />
+
+        { 
+          this.state.dataGotten && <UserCard 
+            avatar_url={this.state.userData.avatar_url}
+            name={this.state.userData.name}
+            location={this.state.userData.location}
+            followers={this.state.userData.followers}
+            following={this.state.userData.following}
+            bio={this.state.userData.bio}
+          /> 
+        }
+      </main>
+    )
+  }
 }
 
 export default App;
