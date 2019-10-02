@@ -5,9 +5,9 @@ import UserCard from './components/UserComponent/UserCard';
 
 
 const options = {
-  headers: { 
-    Authorization: 'Bearer fb861e05630f22b50534894aba095bae5a1405be' 
-  }
+  // headers: { 
+  //   Authorization: 'Bearer fb861e05630f22b50534894aba095bae5a1405be' 
+  // }
 };
 
 
